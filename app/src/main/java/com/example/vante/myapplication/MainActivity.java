@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     public void locationInit(){
         try{
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            if (/*locationInitByGPS()||*/locationInitByNETWORK()){
+            if (locationInitByGPS()||locationInitByNETWORK()){
                 showLocation(location);
             }else{
                 textView.setText("get location failed, last location is "+lastKnownLoc);
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*public boolean locationInitByGPS(){
+    public boolean locationInitByGPS(){
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             Log.d("gps provider","gps down");
             return false;
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         }else {
             return false;
         }
-    }*/
+    }
 
     public boolean locationInitByNETWORK(){
         if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         int check = ContextCompat.checkSelfPermission(this,permissions[0]);
         int check2 = ContextCompat.checkSelfPermission(this,permission2[0]);
         if (check == PackageManager.PERMISSION_GRANTED && check2 == PackageManager.PERMISSION_GRANTED){
-            //Log.d("get permission","both permisisions got");
+            Log.d("get permission","both permisisions got");
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,0,locationListener);
             location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }else{
