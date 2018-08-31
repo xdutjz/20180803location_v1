@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     public void locationInit(){
         try{
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            if (locationInitByGPS()||locationInitByNETWORK()){
+            if (/*locationInitByGPS()||*/locationInitByNETWORK()){
                 showLocation(location);
             }else{
                 textView.setText("get location failed, last location is "+lastKnownLoc);
@@ -100,8 +100,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean locationInitByGPS(){
+    /*public boolean locationInitByGPS(){
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            Log.d("gps provider","gps down");
             return false;
         }
         String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -122,20 +123,25 @@ public class MainActivity extends AppCompatActivity {
         }else {
             return false;
         }
-    }
+    }*/
 
     public boolean locationInitByNETWORK(){
         if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            Log.d("locationbynet","network down");
             return false;
         }
         String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
+        String[] permission2 = {Manifest.permission.ACCESS_FINE_LOCATION};
         int check = ContextCompat.checkSelfPermission(this,permissions[0]);
-        if (check == PackageManager.PERMISSION_GRANTED){
+        int check2 = ContextCompat.checkSelfPermission(this,permission2[0]);
+        if (check == PackageManager.PERMISSION_GRANTED && check2 == PackageManager.PERMISSION_GRANTED){
+            //Log.d("get permission","both permisisions got");
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,0,locationListener);
             location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }else{
             if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }else {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
