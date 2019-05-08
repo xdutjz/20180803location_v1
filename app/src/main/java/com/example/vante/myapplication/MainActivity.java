@@ -2,7 +2,10 @@ package com.example.vante.myapplication;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -41,6 +44,10 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    int daterequest;
+    int datereturn;
+    int timesub;
     private LocationManager locationManager;
     private Location location;
     private Button button;
@@ -51,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location loc) {
-            if (loc!= null){
+            /*if (loc!= null){
                 location = loc;
                 showLocation (location);
-            }
+            }*/
         }
 
         @Override
@@ -81,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                SimpleDateFormat format = new SimpleDateFormat("HHmmssSSS");
+                String date = format.format(new Date());
+                daterequest = Integer.parseInt(date);
+                Log.d("request time: ", date);
+
                 locationInit();
             }
         });
@@ -135,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         int check = ContextCompat.checkSelfPermission(this,permissions[0]);
         int check2 = ContextCompat.checkSelfPermission(this,permission2[0]);
         if (check == PackageManager.PERMISSION_GRANTED && check2 == PackageManager.PERMISSION_GRANTED){
-            Log.d("get permission","both permisisions got");
+            //Log.d("get permission","both permisisions got");
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,0,locationListener);
             location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }else{
@@ -219,8 +231,15 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg){
             switch (msg.what){
                 case SHOW_LOCATION:
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HHmmssSSS");
+                    String date = simpleDateFormat.format(new Date());
                     String currentPosition = (String) msg.obj;
                     textView.setText(currentPosition);
+                    Log.d("hijacked return time ", date);
+                    datereturn = Integer.parseInt(date);
+                    timesub = datereturn - daterequest;
+                    String sub = String.valueOf(timesub);
+                    Log.d("time difference: ", sub);
                     break;
                 default:
                     break;
